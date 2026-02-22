@@ -96,17 +96,27 @@ class CLIApp:
                 persona = self.manager.get_persona(self.current_persona_id)
                 system_prompt = SystemMessage(content=persona.prompts.system)
                 
-                messages = [system_prompt] + self.history + [HumanMessage(content=user_input)]
+                # 將使用者的輸入包裝在 <user_message> 標籤中，提高辨識度
+                formatted_input = f"<user_message>\n{user_input}\n</user_message>"
+                messages = [system_prompt] + self.history + [HumanMessage(content=formatted_input)]
 
                 print("Wife: ", end="", flush=True)
                 
                 # Streaming response
                 full_response = ""
-                response_text = self.client.chat(messages, temperature=persona.config.temperature)
-                print(response_text)
+                # response_text = self.client.chat(messages, temperature=persona.config.temperature)
+                # print(response_text)
+                # print(response_text)
+                for chunk in self.client.chat_stream(messages, temperature=persona.config.temperature, stop=persona.config.stop):
+                    # 2. 收到一個字就立刻印出來，不換行，強制輸出 (flush)
+                    print(chunk, end="", flush=True)
+                    # 3. 把字存進 full_response，等一下要寫進記憶體(history)裡
+                    full_response += chunk
+                
+                print() # 4. 整句話講完後，印一個換行符號收尾
                 
                 self.history.append(HumanMessage(content=user_input))
-                self.history.append(AIMessage(content=response_text))
+                self.history.append(AIMessage(content=full_response))
 
             except KeyboardInterrupt:
                 print("\nGoodbye!")

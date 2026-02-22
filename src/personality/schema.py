@@ -20,6 +20,7 @@ class PersonaConfig(BaseModel):
     temperature: float = Field(0.7, ge=0.0, le=2.0)
     max_tokens: int = Field(1000, gt=0)
     top_p: float = Field(1.0)
+    stop: Optional[List[str]] = Field(default=None, description="List of stop words to halt generation")
     
 class Persona(BaseModel):
     metadata: PersonaMetadata
