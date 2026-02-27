@@ -20,11 +20,10 @@ class ChatClient:
             base_url=self.base_url,
             api_key=self.api_key or "dummy", # Some compatible servers need a dummy key
             model=self.model,
-            streaming=True,
             temperature=0.7 # Default, can be overridden per run
         )
 
-    def chat_stream(self, messages: list[BaseMessage], temperature: float = 0.7, stop: Optional[list[str]] = None) -> AsyncGenerator[str, None]:
+    def chat_stream(self, messages: list[BaseMessage], temperature: float = 0.7, stop: Optional[list[str]] = None, config: Optional[dict] = None) -> AsyncGenerator[str, None]:
         """Streams the response from the LLM."""
         # Update temperature for this call if needed (LangChain object might need re-instantiation or config update)
         # For simplicity, we'll just set it on the object if supported, or pass via bind/config
@@ -32,13 +31,13 @@ class ChatClient:
         # Note: ChatOpenAI.bind(temperature=...) returns a Runnable
         runnable = self.llm.bind(temperature=temperature, stop=stop)
         
-        for chunk in runnable.stream(messages):
+        for chunk in runnable.stream(messages, config=config):
             if chunk.content:
                 yield chunk.content
 
-    def chat(self, messages: list[BaseMessage], temperature: float = 0.7, stop: Optional[list[str]] = None) -> str:
+    def chat(self, messages: list[BaseMessage], temperature: float = 0.7, stop: Optional[list[str]] = None, config: Optional[dict] = None) -> str:
         """Non-streaming chat."""
         runnable = self.llm.bind(temperature=temperature, stop=stop)
-        response = runnable.invoke(messages)
+        response = runnable.invoke(messages, config=config)
         return response.content
 

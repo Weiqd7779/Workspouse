@@ -121,7 +121,11 @@ async def chat(req: ChatRequest, x_session_id: str = Header(...)):
     try:
         # For now, only sync supported in this endpoint wrapper
         # Ensure we use the client correctly
-        response_text = client.chat(messages, temperature=persona.config.temperature)
+        # Construct config for LangSmith tracing
+        config = {
+            "tags": [f"persona:{persona.metadata.id}", f"session:{x_session_id}"]
+        }
+        response_text = client.chat(messages, temperature=persona.config.temperature, config=config)
         
         # Update history
         session.history.append(HumanMessage(content=req.message))
@@ -145,4 +149,4 @@ async def get_history(x_session_id: str = Header(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)
