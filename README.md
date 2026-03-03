@@ -1,4 +1,4 @@
-# Workspouse — Persona-Driven AI Chatbot
+# Workspouse
 
 LLM 驅動的 Agent 天生具有高度不確定性，同一段 Prompt 在不同模型、不同參數下可能產生截然不同的輸出。**Workspouse** 的核心理念是：打造一個**穩定、可追蹤、可評估**的 AI Agent 框架。透過 YAML Persona 設定檔將行為參數化，結合 Pydantic Schema 驗證與 LangSmith 可觀測性，讓每一次對話都能被量化衡量與迭代改進。
 
