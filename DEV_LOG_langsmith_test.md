@@ -20,7 +20,7 @@
     - **Message Stack 管理**：實施「系統提示詞優先」原則，將 Persona 的 System Message 始終固定在 `inputs` 的首位。
     - **工具執行追蹤**：使用 `@traceable` 裝飾器定義為 `chain` 類型，清楚記錄 Agent 的思考過程、工具呼叫及其結果的合成回覆。
 
-4.  **五大場景壓力測試 (Scenarios)**：
+4.  **壓力測試 (Scenarios)**：
     - **Scenario 1**：5 輪對話壓力測試，包含 3 個連續工具呼叫（天氣、計算、設定）。
     - **Scenario 2 & 3**：單輪對話與單一工具調用的基礎功能驗證。
     - **Scenario 4**：刻意拋出異常（User ID 999），測試系統的錯誤捕捉與防禦性邏輯。
